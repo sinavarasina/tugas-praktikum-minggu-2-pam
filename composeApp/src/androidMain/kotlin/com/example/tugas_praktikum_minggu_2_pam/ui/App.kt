@@ -60,7 +60,7 @@ fun App() {
             Text(
                 text = "hint: click berita untuk membaca",
                 color = CatpuccinMocha.yellow,
-                fontSize = 8.sp,
+                fontSize = 12.sp,
                 modifier = Modifier.padding(bottom = 16.dp, top = 2.dp)
             )
 
