@@ -15,14 +15,16 @@ object NewsFactory {
         Pair("Pipewire 1.6 rilis dengan banyak fitur baru", "Linux"),
         Pair("SIMDJson menunjukan peningkatan performa pada SIMD di JSON Parsing", "Tech"),
         Pair("Apple M3 terus menunjukan peningkatan pada Asahi Linux", "Linux"),
-        Pair("Linux 7.0 membawa beberapa peningkatan untuk laptop modern", "Linux") )
+        Pair("Linux 7.0 membawa beberapa peningkatan untuk laptop modern", "Linux")
+    )
+
     fun generateNews(id: Int): News {
         val randomNews = dataPairs.random()
         val (title, category) = randomNews
         return News(
             id = id,
             title = title,
-            category =  category
+            category = category
         )
     }
 }

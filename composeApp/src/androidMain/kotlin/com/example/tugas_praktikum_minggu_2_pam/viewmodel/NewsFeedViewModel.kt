@@ -29,7 +29,7 @@ class NewsFeedViewModel {
         viewModelScope.launch {
             dataSource.getNewsStream()
                 .catch { e -> println("Stream Error: ${e.message}") }
-                .filter { news -> news.category == "Tech" || news.category == "Linux" || news.category == "Anime"}
+                .filter { news -> news.category == "Tech" || news.category == "Linux" || news.category == "Anime" }
                 .map { news -> "[${news.category.uppercase()}] ${news.title}" }
                 .collect { formattedNews ->
                     val detail = async(Dispatchers.IO) {
