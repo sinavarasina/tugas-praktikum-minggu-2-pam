@@ -7,7 +7,7 @@ data class News(
 )
 
 object NewsFactory {
-    private val dataPairs = listOf<String>(
+    private val dataPairs = listOf(
         Pair("Crunchyroll salah upload episode anime fate strange fake", "Anime"),
         Pair("Whatsapp web dikabarkan akan menambahkan call support di website", "Tech"),
         Pair("Rust di linux kernel sudah permanen, tag experimental sudah dihapus", "Linux"),
