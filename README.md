@@ -16,10 +16,10 @@ Class = PAM RA
 ## Code Documentation
 > its more likely Code Flow  
 
-1. News Model
+### 1. News Model
 first of all, i create news model to define how the news will struct,  
 the struct (aka dataclass) would be look like this  
-```
+```kotlin
 data class News(
     val id: Int,
     val title: String,
@@ -29,7 +29,7 @@ data class News(
 the news consist of id, title and category.  
 and then the object of NewsFactory is used to create/generate new news (with predefined news as dummy data of course),  
 you can see this part in [model/News.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/model/News.kt)
-```
+```kotlin
 object NewsFactory {
     private val dataPairs = listOf(
         Pair("Crunchyroll salah upload episode anime fate strange fake", "Anime"),
@@ -55,11 +55,11 @@ object NewsFactory {
 
 ```
 
-2. Data Flow  
+### 2. Data Flow  
 to implement flow i create a classes in [data/NewsDataFlow.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/data/NewsDataFlow.kt),  
-it work to emit the new news, you can see it making delay about ~2 sec (2000 millis), create a new news by the with NewsFactory.generateNews (in model/News.kt), passing its id, emit it and iterate the id with post-increment operator (i dont know if the id is thread safe like atomic, since it will only add every 2 sec).  
+it work to emit the new news, you can see it making delay about ~2 sec (2000 millis), create a new news by the with NewsFactory.generateNews (in [model/News.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/model/News.kt)), passing its id, emit it and iterate the id with post-increment operator (i dont know if the id is thread safe like atomic, since it will only add every 2 sec).  
 you can see the code here  
-```
+```kotlin
 package com.example.tugas_praktikum_minggu_2_pam.data
 
 import com.example.tugas_praktikum_minggu_2_pam.model.News
@@ -79,6 +79,83 @@ class NewsDataFlow {
         }
     }
 }
+```
+
+### 3. View Model & State Manager
+next is how i handle the data from flow. i put the logic in [viewmodel/NewsFeedViewModel.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/viewmodel/NewsFeedViewModel.kt).
+here i use `viewModelScope.launch` to start collecting the stream from Data Flow. but before it reach the end, i manipulate the stream using flow operators.
+i use `.filter` to only allow "Tech", "Linux" and "Anime" category to pass. and then `.map` to format the title into string format like `[CATEGORY] title`.
+
+for the async task like the module requirement, i use `async(Dispatchers.IO)` and `.await()` inside the collect block to simulate network fetching without freezing the main UI thread. 
+and for the state, i use `MutableStateFlow` to save the read count and the news list itself.
+
+```kotlin
+    fun startProcessing() {
+        viewModelScope.launch {
+            dataSource.getNewsStream()
+                .catch { e -> println("Stream Error: ${e.message}") }
+                .filter { news -> news.category == "Tech" || news.category == "Linux" || news.category == "Anime" }
+                .map { news -> "[${news.category.uppercase()}] ${news.title}" }
+                .collect { formattedNews ->
+                    val detail = async(Dispatchers.IO) {
+                        fetchNewsDetail(formattedNews)
+                    }.await()
+                    val content = "$formattedNews\n $detail"
+
+                    _newsFeed.update { currentList -> listOf(content) + currentList }
+                }
+        }
+    }
+```
+
+### 4. UI & Compose
+for the ui, i create some file as  
+1. [ui/App.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/ui/App.kt) as main layout.  
+2. [ui/style/colorscheme/CatpuccinMocha.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/ui/style/colorscheme/CatpuccinMocha.kt) as colorscheme.  
+3. [ui/style/components/NewsCard.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/ui/components/NewsCard.kt) as ui component for news card.  
+
+im not gonna dig down too much into ui design because it is not in my/task objective, so i will just explain logic part as  
+this part  
+```kotlin
+        val count by viewModel.readCount.collectAsState()
+        val feedList by viewModel.newsFeed.collectAsState()
+```
+i use collectAsState() to observe the state, so when it new news updated in the viewModel or the count changes its will update the UI.  
+and then this part  
+```kotlin
+    var isRead by remember { mutableStateOf(false) }
+
+    Card(
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (isRead) CatpuccinMocha.surface1 else CatpuccinMocha.surface0
+        ),
+        modifier = Modifier
+            .padding(16.dp)
+            .clickable(enabled = !isRead) {
+                isRead = true
+                onRead()
+            }
+    )
+```
+i create a isRead variable as for the card clicked (by the .clickable chain method) it will set the isRead to true, remember it and call onRead() which is in [ui/App.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/ui/App.kt),  
+it pass viewModel.markNewsAsRead()
+```kotlin
+LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(feedList) { content ->
+                    NewsCard(
+                        content = content,
+                        onRead = { viewModel.markNewsAsRead() })
+                }
+            }
+```
+as the viewModel.markNewsAsRead() in [viewmodel/NewsFeedViewModel.kt](composeApp/src/androidMain/kotlin/com/example/tugas_praktikum_minggu_2_pam/viewmodel/NewsFeedViewModel.kt) are doing post-increment  
+```kotlin
+    fun markNewsAsRead() {
+        _readCount.value++
+    }
 ```
 
 ---
