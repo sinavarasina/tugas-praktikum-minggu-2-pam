@@ -38,14 +38,16 @@ class NewsFeedViewModel {
                     val content = "$formattedNews\n $detail"
 
                     _newsFeed.update { currentList -> listOf(content) + currentList }
-
-                    _readCount.value++
                 }
         }
     }
 
+    fun markNewsAsRead() {
+        _readCount.value++
+    }
+
     private suspend fun fetchNewsDetail(title: String): String {
         delay(1000)
-        return "Detail News berhasil di fetch"
+        return "Detail: News berhasil di fetch"
     }
 }

@@ -48,17 +48,25 @@ fun App() {
             )
 
             Text(
-                text = "total berita tersinkron : $count",
+                text = "total berita dibaca : $count",
                 color = CatpuccinMocha.green,
                 fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 16.dp, top = 4.dp)
+                modifier = Modifier.padding(top = 4.dp)
+            )
+            Text(
+                text = "hint: click berita untuk membaca",
+                color = CatpuccinMocha.yellow,
+                fontSize = 8.sp,
+                modifier = Modifier.padding(bottom = 16.dp, top = 2.dp)
             )
 
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 items(feedList) { content ->
-                    NewsCard(content = content)
+                    NewsCard(
+                        content = content,
+                        onRead = {viewModel.markNewsAsRead()})
                 }
             }
         }
