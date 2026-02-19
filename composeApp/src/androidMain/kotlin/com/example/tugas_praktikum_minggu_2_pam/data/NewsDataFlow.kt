@@ -11,7 +11,7 @@ class NewsDataFlow {
         var currentId = 1
         while (true) {
             delay(2000)
-            var newNews = NewsFactory.generateNews(currentId)
+            val newNews = NewsFactory.generateNews(currentId)
             emit(newNews)
             currentId++
         }
