@@ -1,3 +1,24 @@
+# Tugas 2 PAM - News Feed App 
+> this app i made to fullfill my homework/task
+> see [this module](https://kuliah2.itera.ac.id/pluginfile.php/63172/mod_resource/content/1/Materi_02_Advanced_Kotlin_Coroutines_Flow.pdf) for more details.
+
+---
+
+## Student Identity
+Name = Varasina Farmadani  
+NIM = 123140107  
+Class = PAM RA  
+
+## Screenshoot
+![Full IDE](screenshoots/SS2.0.png)
+![Just EMU](screenshoots/SS2.1.png)
+
+## Code Documentation
+
+WIP
+
+---
+
 This is a Kotlin Multiplatform project targeting Android.
 
 * [/composeApp](./composeApp/src) is for code that will be shared across your Compose Multiplatform applications.
