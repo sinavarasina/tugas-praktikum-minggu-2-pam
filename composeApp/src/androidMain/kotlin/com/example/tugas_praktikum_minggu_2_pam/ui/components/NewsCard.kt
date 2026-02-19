@@ -13,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tugas_praktikum_minggu_2_pam.ui.colorscheme.CatpuccinMocha
+import com.example.tugas_praktikum_minggu_2_pam.ui.style.colorscheme.CatpuccinMocha
 
 @Composable
 fun NewsCard(content: String) {

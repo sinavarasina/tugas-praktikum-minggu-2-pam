@@ -15,7 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.tugas_praktikum_minggu_2_pam.ui.colorscheme.CatpuccinMocha
+import com.example.tugas_praktikum_minggu_2_pam.ui.style.colorscheme.CatpuccinMocha
 import com.example.tugas_praktikum_minggu_2_pam.ui.components.NewsCard
 import com.example.tugas_praktikum_minggu_2_pam.viewmodel.NewsFeedViewModel
 import androidx.compose.foundation.lazy.items
