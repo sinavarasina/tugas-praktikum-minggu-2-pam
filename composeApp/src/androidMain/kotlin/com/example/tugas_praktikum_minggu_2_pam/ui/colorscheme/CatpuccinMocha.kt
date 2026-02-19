@@ -1,4 +1,4 @@
-package com.example.tugas_praktikum_minggu_2_pam.style.colorscheme
+package com.example.tugas_praktikum_minggu_2_pam.ui.colorscheme
 
 import androidx.compose.ui.graphics.Color
 
