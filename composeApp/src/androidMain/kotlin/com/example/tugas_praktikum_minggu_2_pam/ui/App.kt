@@ -3,17 +3,26 @@ package com.example.tugas_praktikum_minggu_2_pam.ui
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.example.tugas_praktikum_minggu_2_pam.model.News
+import com.example.tugas_praktikum_minggu_2_pam.style.colorscheme.CatpuccinMocha
+import com.example.tugas_praktikum_minggu_2_pam.viewmodel.NewsFeedViewModel
 import org.jetbrains.compose.resources.painterResource
 
 import tugaspraktikumminggu2pam.composeapp.generated.resources.Res
@@ -23,25 +32,39 @@ import tugaspraktikumminggu2pam.composeapp.generated.resources.compose_multiplat
 @Preview
 fun App() {
     MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
+        val viewModel = remember { NewsFeedViewModel() }
+
+        LaunchedEffect(Unit) {
+            viewModel.startProcessing()
+        }
+
+        val count by viewModel.readCount.collectAsState()
+        val feedlist by viewModel.newsFeed.collectAsState()
+
         Column(
             modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
+                .fillMaxSize()
+                .background(CatpuccinMocha.base)
                 .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                }
-            }
+            Text(
+                text = "News Feed - 123140107",
+                color = CatpuccinMocha.mauve,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+
+            Text(
+                text = "total berita tersinkron : $count",
+                color = CatpuccinMocha.green,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(bottom = 16.dp, top = 4.dp)
+            )
+
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) { }
         }
     }
 }
